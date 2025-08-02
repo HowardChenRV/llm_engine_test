@@ -18,12 +18,12 @@ from ...utils.nvidia_tool import set_cuda_visible_devices
 
 class TestAyncEngine:
     
-    # 测试异步推理的命令行参数: 校验参数默认值
+    # Test command line arguments for asynchronous inference: Validate default parameter values
     @pytest.mark.P1
     def test_add_async_engine_cli_args_default(self):
         parser = argparse.ArgumentParser()
         parser = AsyncEngineArgs.add_cli_args(parser)
-        args = parser.parse_args([])  # 使用空列表来模拟不传递任何命令行参数的情况
+        args = parser.parse_args([])  # Use an empty list to simulate not passing any command line arguments
 
         assert hasattr(args, "model")
         assert args.model == "facebook/opt-125m"
@@ -116,12 +116,12 @@ class TestAyncEngine:
         assert args.max_log_len is None
 
 
-    # 校验异步推理参数对象默认值
+    # Validate default values of asynchronous inference parameter objects
     @pytest.mark.P1
     def test_async_engine_args_default(self):
         parser = argparse.ArgumentParser()
         parser = AsyncEngineArgs.add_cli_args(parser)
-        args = parser.parse_args([])  # 使用空列表来模拟不传递任何命令行参数的情况
+        args = parser.parse_args([])  # Use an empty list to simulate not passing any command line arguments
         engine_args = AsyncEngineArgs.from_cli_args(args)
         
         # Define expected default values
@@ -161,7 +161,7 @@ class TestAyncEngine:
                 f"Default value for {field_name} is not as expected."
 
     
-    # 测试tokenizer获取: 不同模型获取tokenizer正常
+    # Test tokenizer acquisition: Different models acquire tokenizer normally
     @pytest.mark.P0
     @pytest.mark.parametrize("model_path", [
         "/share/datasets/public_models/Llama-2-70b-chat-hf",
@@ -178,7 +178,7 @@ class TestAyncEngine:
         logger.info(f"tokenizer pass: {model_path}")  
 
 
-    # 测试uuid: 长度是否为32、格式是否为16进制、多次获取不一致
+    # Test uuid: Whether the length is 32, whether the format is hexadecimal, and whether multiple acquisitions are inconsistent
     @pytest.mark.P0
     def test_random_uuid(self):
         request_id = random_uuid()
@@ -188,7 +188,7 @@ class TestAyncEngine:
         assert request_id != request_id2
 
 
-    # 测试SamplingParams正常设置
+    # Test SamplingParams normal settings
     @pytest.mark.P0
     def test_sampling_params_set(self):
         test_params = {
@@ -221,7 +221,7 @@ class TestAyncEngine:
             assert attributes[key] == value, f"Attribute {key} expected {value} but got {attributes[key]}"
 
 
-    # 测试SamplingParams Greedy设置
+    # Test SamplingParams Greedy settings
     @pytest.mark.P1
     def test_sampling_params_set_by_greedy(self):
         sampling_params = SamplingParams(
@@ -237,7 +237,7 @@ class TestAyncEngine:
         assert sampling_params.min_p == 0.0
 
 
-    # 测试SamplingParams Greedy设置
+    # Test SamplingParams Greedy settings
     @pytest.mark.P2
     def test_sampling_params_set_by_greedy_best_of_2(self):
         with pytest.raises(ValueError):
@@ -248,19 +248,19 @@ class TestAyncEngine:
             logger.debug(sampling_params)
         
 
-    # 测试异步推理接口
+    # Test asynchronous inference interface
     @pytest.mark.P0
     @pytest.mark.asyncio
     @pytest.mark.parametrize("model", [
         {"tp": 1, "model_path": "/share/datasets/public_models/Meta-Llama-3-8B-Instruct"},
     ])
     async def test_async_engine_inference(self, model):
-        # 处理测试参数
+        # Process test parameters
         tp = model["tp"]
         model_path = model["model_path"]
-        # 设置 CUDA_VISIBLE_DEVICES
+        # Set CUDA_VISIBLE_DEVICES
         set_cuda_visible_devices(gpu_num=tp)
-        # 设置llm日志等级
+        # Set llm log level
         os.environ["INFI_LOG_LEVEL"] = "3"
         
         args_list = [
@@ -281,7 +281,7 @@ class TestAyncEngine:
         engine_args = AsyncEngineArgs.from_cli_args(args)
         engine = AsyncLLMEngine.from_engine_args(engine_args)
 
-        # 推理
+        # Inference
         async def inference_generator(engine, max_tokens: int, boundary_len: int):
             prompt = "The biggest animal in the world is"
             request_id = random_uuid()
@@ -296,12 +296,12 @@ class TestAyncEngine:
             async for request_output in results_generator:
                 count += 1
                 final_output = request_output
-                # 达到最大推理数截断，测试abort方法
+                # Truncate when reaching the maximum inference count, test abort method
                 if count >= boundary_len:
                     await engine.abort(request_id)
             
             logger.info(f"inference_generator: {final_output}")
-            # 校验
+            # Validate
             assert final_output.request_id == request_id
             assert final_output.prompt == prompt
             assert len(final_output.outputs) > 0
@@ -315,7 +315,7 @@ class TestAyncEngine:
         response = await inference_generator(engine=engine, max_tokens=128, boundary_len=1024)
         response_abort = await inference_generator(engine=engine, max_tokens=128, boundary_len=32)
 
-        # 校验
+        # Validate
         output = response.outputs[0]
         output_abort = response_abort.outputs[0]
         assert output.index == 0

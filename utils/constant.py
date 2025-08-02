@@ -1,4 +1,4 @@
-# 推理引擎特性功能相关
+# Inference engine feature-related
 Feature_config = {
     "prefix_caching": {
         "tp": 2,
@@ -23,16 +23,16 @@ Feature_config = {
 }
 
 
-# 自建10题 测试推理引擎正确性
+# Self-built 10 questions to test inference engine correctness
 Question_10 = [
     "what is the largest animal in the world?",
     "What is the square root of 81?",
     "Who was president of the United States during the Civil War?",
     "Are leaves falling in the wind free fall?",
     "What are the four major ancient civilizations in the world?",
-    "甲说：我会游泳；乙说：甲不会游泳；丙说：乙不会游泳；丁说：我们有三个人会游泳。以上只有一个人说假话，那么谁说假话？",
-    "6名同学到甲、乙、丙三个场馆做志愿者，每名同学只去1个场馆，甲场馆安排1名，乙场馆安排2名，丙场馆安排3名，则不同的安排方法共有多少种？只回答最后的结果数字",
-    "有一周长600米的环形跑道，甲、乙二人同时、同地、同向而行，甲每分钟跑300米，乙每分钟跑400米，经过几分钟二人第一次相遇？",
-    "已知等差数列5，9，13，17...137，问81是这个数列的第几个数",
-    "王老师有一盒铅笔，如平均分给2名同学余1支，平均分给3名同学余2支，平均分给4名同学余3支，平均分给5名同学余4支。问这盒铅笔最少有多少支？",
+    "A says: I can swim; B says: A cannot swim; C says: B cannot swim; D says: Three of us can swim. Only one person is lying, who is it?",
+    "Six students volunteer at three venues: A, B, and C. Each student goes to only one venue. Venue A arranges for 1 student, venue B arranges for 2 students, and venue C arranges for 3 students. How many different arrangements are there? Please provide only the final numerical result.",
+    "There is a circular track with a circumference of 600 meters. A and B start running simultaneously from the same place in the same direction. A runs 300 meters per minute, and B runs 400 meters per minute. After how many minutes will they meet for the first time?",
+    "Given an arithmetic sequence: 5, 9, 13, 17...137, which term is 81 in this sequence?",
+    "Teacher Wang has a box of pencils. When distributed equally among 2 students, there is 1 pencil left over. When distributed equally among 3 students, there are 2 pencils left over. When distributed equally among 4 students, there are 3 pencils left over. When distributed equally among 5 students, there are 4 pencils left over. What is the minimum number of pencils in the box?",
 ]

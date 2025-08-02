@@ -6,15 +6,15 @@ sys.path.append("/Users/howardchen/Dev/QA/llm_engine_test")
 from utils.prometheus_tool import parse_prometheus_metrics
 
 
-# 打开并读取文件内容
+# Open and read file content
 with open('scripts/metrics.txt', 'r', encoding='utf-8') as file:
     content = file.read()
 
-# 打印或使用读取的内容
+# Print or use the read content
 print(content)
 print("-" * 100)
 
-# 解析普罗米修斯格式监控指标
+# Parse Prometheus format monitoring metrics
 metrics = parse_prometheus_metrics(content)
 
 # print(metrics)
@@ -22,11 +22,11 @@ use_docker = False
 model = "deepseek-r1"
 engine = "sglang"
 
-# 校验必须metrics
+# Validate required metrics
 # required_metrics = REQUIRED_METRICS[engine] + REQUIRED_METRICS["common"]
 for metric in metrics:
     
-    # 校验metric值
+    # Validate metric values
     metric_values = metrics[metric]["values"]
     metric_type = metrics[metric]["type"]
     metric_help = metrics[metric]["help"]

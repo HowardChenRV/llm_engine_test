@@ -26,20 +26,20 @@ class TestV1Completions:
                 **request_content
             )
             logger.debug(completion)
-            # 必须参数校验
+            # Required parameter validation
             for attr in ["id", "object", "created", "model", "choices", "usage"]:
-                assert hasattr(completion, attr), f'completion返回参数校验失败'
+                assert hasattr(completion, attr), f'completion return parameter validation failed'
             assert completion.model == model
-            # 校验choices
+            # Validate choices
             assert len(completion.choices) > 0
             for choice in completion.choices:
                 for attr in ["text", "index", "finish_reason"]:
-                    assert hasattr(choice, attr), f'choice返回参数校验失败'
+                    assert hasattr(choice, attr), f'choice return parameter validation failed'
                 assert choice.finish_reason in ["stop", "length"]
                 CorrectnessTool.check_answer(choice.text)
-            # 校验usage
+            # Validate usage
             for attr in ["prompt_tokens", "completion_tokens", "total_tokens"]:
-                assert hasattr(completion.usage, attr), f'usage返回参数校验失败'
+                assert hasattr(completion.usage, attr), f'usage return parameter validation failed'
             assert completion.usage.prompt_tokens>0 and completion.usage.completion_tokens>0
             assert completion.usage.completion_tokens <= question["max_tokens"]
             assert completion.usage.total_tokens == completion.usage.prompt_tokens + completion.usage.completion_tokens
@@ -71,21 +71,21 @@ class TestV1Completions:
             finish_reason = None
             for completion in stream:
                 # print(completion)
-                # 必须参数校验
+                # Required parameter validation
                 for attr in ["id", "object", "created", "model", "choices", "usage"]:
-                    assert hasattr(completion, attr), f'completion返回参数校验失败'
+                    assert hasattr(completion, attr), f'completion return parameter validation failed'
                 assert completion.model == model
-                # 校验choices
+                # Validate choices
                 if finish_reason == None:
                     assert len(completion.choices) > 0
                 for choice in completion.choices:
                     for attr in ["text", "index", "finish_reason"]:
-                        assert hasattr(choice, attr), f'choice返回参数校验失败'
+                        assert hasattr(choice, attr), f'choice return parameter validation failed'
                     content += choice.text
                     finish_reason = choice.finish_reason
-                # 校验usage
+                # Validate usage
                 for attr in ["prompt_tokens", "completion_tokens", "total_tokens"]:
-                    assert hasattr(completion.usage, attr), f'usage返回参数校验失败'
+                    assert hasattr(completion.usage, attr), f'usage return parameter validation failed'
                 assert completion.usage.prompt_tokens>0 and completion.usage.completion_tokens>0
                 assert completion.usage.completion_tokens <= question["max_tokens"]
                 assert completion.usage.total_tokens == completion.usage.prompt_tokens + completion.usage.completion_tokens
@@ -113,7 +113,7 @@ class TestV1Completions:
                 **request_content
             )
             logger.debug(completion)
-            # 校验终止内容
+            # Validate termination content
             assert completion.choices[0].finish_reason == "stop"
             for num in ["1", "2", "3", "4"]:
                 assert num in completion.choices[0].text, \
@@ -145,11 +145,11 @@ class TestV1Completions:
                 **request_content
             )
             logger.debug(completion)
-            # 校验终止内容
+            # Validate termination content
             assert len(completion.choices) > 0
             for choice in completion.choices:
                 for attr in ["text", "index", "finish_reason"]:
-                    assert hasattr(choice, attr), f'choice返回参数校验失败'
+                    assert hasattr(choice, attr), f'choice return parameter validation failed'
                 assert choice.finish_reason == "stop"
                 assert choice.text.endswith(suffix)
         except Exception as e:
@@ -173,11 +173,11 @@ class TestV1Completions:
                 **request_content
             )
             logger.debug(completion)
-            # 校验logprobs内容
+            # Validate logprobs content
             assert len(completion.choices) > 0
             for choice in completion.choices:
                 for attr in ["text", "index", "finish_reason", "logprobs"]:
-                    assert hasattr(choice, attr), f'choice返回参数校验失败'
+                    assert hasattr(choice, attr), f'choice return parameter validation failed'
                 assert len(choice.logprobs.top_logprobs[0]) == 4
                 assert "".join(choice.logprobs.tokens) == choice.text
         except Exception as e:
@@ -204,26 +204,26 @@ class TestV1Completions:
             finish_reason = None
             for completion in stream:
                 # print(completion)
-                # 必须参数校验
+                # Required parameter validation
                 for attr in ["id", "object", "model", "choices", "usage"]:
-                    assert hasattr(completion, attr), f'completion返回参数校验失败'
+                    assert hasattr(completion, attr), f'completion return parameter validation failed'
                 assert completion.model == model
-                # 校验choices
+                # Validate choices
                 if finish_reason == None:
                     assert len(completion.choices) > 0
                 for choice in completion.choices:
                     for attr in ["text", "index", "finish_reason", "logprobs"]:
-                        assert hasattr(choice, attr), f'choice返回参数校验失败'
+                        assert hasattr(choice, attr), f'choice return parameter validation failed'
                     finish_reason = choice.finish_reason
                     if finish_reason is not None:
                         break
 
-                    # 校验logprobs
+                    # Validate logprobs
                     assert len(choice.logprobs.tokens) == 1
                     target = choice.logprobs.tokens[0]
                     dic = choice.logprobs.top_logprobs[0]
                     max_prob_token = max(dic.keys(), key=lambda x: dic[x])
-                    assert target == max_prob_token, f'校验logprobs失败:{target} != {max_prob_token}'
+                    assert target == max_prob_token, f'logprobs validation failed:{target} != {max_prob_token}'
 
             assert finish_reason in ["stop", "length"]
         except Exception as e:

@@ -1,8 +1,8 @@
-# 忽略 Python 缓存文件
+# Ignore Python cache files
 __pycache__/
 *.pyc
 
-# 忽略 pytest 缓存文件
+# Ignore pytest cache files
 .pytest_cache/
 .idea/
 reports/

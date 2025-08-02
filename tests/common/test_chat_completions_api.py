@@ -11,7 +11,7 @@ from ...utils.logger import logger
 class TestV1ChatCompletions:
     
     @pytest.mark.P0
-    @pytest.mark.description("对话推理测试-非Stream模式: 单轮对话")
+    @pytest.mark.description("Dialog reasoning test - Non-stream mode: Single round dialogue")
     def test_chat_single_round(self, client, model):
         question = CorrectnessTool.get_question()
         request_content = {
@@ -38,7 +38,7 @@ class TestV1ChatCompletions:
 
 
     @pytest.mark.P0
-    @pytest.mark.description("对话推理测试-非Stream模式: 多轮对话")
+    @pytest.mark.description("Dialog reasoning test - Non-stream mode: Multi-round dialogue")
     def test_chat_multi_round(self, client, model):
         question = CorrectnessTool.get_question()
         request_content = {
@@ -67,7 +67,7 @@ class TestV1ChatCompletions:
 
 
     @pytest.mark.P0
-    @pytest.mark.description("对话推理测试-非Stream模式: system_prompt")
+    @pytest.mark.description("Dialog reasoning test - Non-stream mode: system_prompt")
     def test_chat_system_prompt(self, client, model):
         question = CorrectnessTool.get_question()
         request_content = {
@@ -95,7 +95,7 @@ class TestV1ChatCompletions:
 
 
     @pytest.mark.P0
-    @pytest.mark.description("对话推理测试-非Stream模式: 长文本")
+    @pytest.mark.description("Dialog reasoning test - Non-stream mode: Long text")
     def test_chat_long_context(self, client, model, model_config, max_model_len):
         prompt_len = 4096
         if model_config:
@@ -119,7 +119,7 @@ class TestV1ChatCompletions:
             logger.debug(chat_completion)
             open_ai_response_validator = OpenAIResponseValidator(**request_content)
             open_ai_response_validator._validate_non_stream_response_structure(response=chat_completion)
-            assert len(open_ai_response_validator.content[0])>0, f"长文本测试失败，未返回任何有效内容: {chat_completion}"
+            assert len(open_ai_response_validator.content[0])>0, f"Long text test failed, no valid content returned: {chat_completion}"
         except Exception as e:
             logger.error(e)
             exc_info = sys.exc_info()
@@ -128,7 +128,7 @@ class TestV1ChatCompletions:
 
 
     @pytest.mark.P1
-    @pytest.mark.description("对话推理测试-非Stream模式: n > 1")
+    @pytest.mark.description("Dialog reasoning test - Non-stream mode: n > 1")
     def test_chat_with_n(self, client, model, engine, use_docker):
         if not use_docker and engine in ["sglang", "vllm", "lmdeploy"]:
             pytest.skip(f"{engine} do not support n > 1")
@@ -159,9 +159,9 @@ class TestV1ChatCompletions:
             pytest.fail()
 
 
-    # 核心功能-对话推理测试-Stream
+    # Core functionality - Dialog reasoning test - Stream
     @pytest.mark.P0
-    @pytest.mark.description("对话推理测试-Stream模式: include_usage == True or False")
+    @pytest.mark.description("Dialog reasoning test - Stream mode: include_usage == True or False")
     @pytest.mark.parametrize("include_usage", [False, True])
     def test_chat_with_stream(self, client, model, include_usage):
         question = CorrectnessTool.get_question()
@@ -192,7 +192,7 @@ class TestV1ChatCompletions:
 
 
     @pytest.mark.P0
-    @pytest.mark.description("对话推理测试-Stream模式: 长文本")
+    @pytest.mark.description("Dialog reasoning test - Stream mode: Long text")
     def test_chat_with_stream_long_context(self, client, model, model_config, max_model_len):
         prompt_len = 128
         if model_config:
@@ -219,7 +219,7 @@ class TestV1ChatCompletions:
             open_ai_response_validator = OpenAIResponseValidator(**request_content)
             open_ai_response_validator._validate_stream_response_structure(response=stream)
             logger.debug(open_ai_response_validator)
-            assert len(open_ai_response_validator.content[0])>0, f"长文本测试失败，未返回任何有效内容: {open_ai_response_validator}"
+            assert len(open_ai_response_validator.content[0])>0, f"Long text test failed, no valid content returned: {open_ai_response_validator}"
         except Exception as e:
             logger.error(e)
             exc_info = sys.exc_info()
@@ -228,7 +228,7 @@ class TestV1ChatCompletions:
 
 
     @pytest.mark.P1
-    @pytest.mark.description("对话推理测试-Stream模式: n > 1")
+    @pytest.mark.description("Dialog reasoning test - Stream mode: n > 1")
     def test_chat_with_stream_and_n(self, client, model, engine, use_docker):
         if not use_docker and engine in ["sglang", "vllm", "lmdeploy"]:
             pytest.skip(f"{engine} do not support n > 1")
@@ -262,7 +262,7 @@ class TestV1ChatCompletions:
     
     
     @pytest.mark.P0
-    @pytest.mark.description("终止参数测试-stop")
+    @pytest.mark.description("Termination parameter test - stop")
     @pytest.mark.parametrize("stop_param", [["5"], ["10", "9", "8", "7", "6", "5"]])
     def test_chat_with_stop(self, client, model, stop_param):
         request_content = {
@@ -281,7 +281,7 @@ class TestV1ChatCompletions:
             logger.debug(chat_completion)
             open_ai_response_validator = OpenAIResponseValidator(**request_content)
             open_ai_response_validator._validate_non_stream_response_structure(response=chat_completion)
-            # 校验终止内容
+            # Verify termination content
             assert chat_completion.choices[0].finish_reason == "stop"
             for num in ["1", "2", "3", "4"]:
                 assert num in open_ai_response_validator.content[0], \
@@ -298,7 +298,7 @@ class TestV1ChatCompletions:
             
     @pytest.mark.skip(reason="vllm and most of engines do not limit stop num.")
     @pytest.mark.P2
-    @pytest.mark.description("终止参数测试-stop: 边界值 stop长度 > 4, 预期错误码拦截")
+    @pytest.mark.description("Termination parameter test - stop: Boundary value stop length > 4, expected error code interception")
     @pytest.mark.parametrize("stop_param", [["8", "7", "6", "5", "1"]]) # stop长度预期<=4
     def test_chat_with_stop_parameter_error(self, client, model, stop_param, use_docker):
         if not use_docker:
@@ -329,7 +329,7 @@ class TestV1ChatCompletions:
 
 
     @pytest.mark.P0
-    @pytest.mark.description("终止参数测试-max_tokens: max_tokens == 10")
+    @pytest.mark.description("Termination parameter test - max_tokens: max_tokens == 10")
     def test_chat_with_max_tokens(self, client, model):
         request_content = {
             "model": model,
@@ -347,7 +347,7 @@ class TestV1ChatCompletions:
             logger.debug(chat_completion)
             open_ai_response_validator = OpenAIResponseValidator(**request_content)
             open_ai_response_validator._validate_non_stream_response_structure(response=chat_completion)
-            # 校验终止长度
+            # Verify termination length
             assert chat_completion.choices[0].finish_reason == "length"
             assert open_ai_response_validator.usage[0].completion_tokens == 10, f"chat with max tokens error, {open_ai_response_validator.content[0]}"
         except Exception as e:
@@ -358,7 +358,7 @@ class TestV1ChatCompletions:
 
 
     @pytest.mark.P1
-    @pytest.mark.description("终止参数测试-stop 组合 max_tokens: 预期提前stop")
+    @pytest.mark.description("Termination parameter test - stop combined with max_tokens: Expected to stop early")
     def test_chat_with_stop_and_max_tokens(self, client, model):
         request_content = {
             "model": model,
@@ -377,7 +377,7 @@ class TestV1ChatCompletions:
             logger.debug(chat_completion)
             open_ai_response_validator = OpenAIResponseValidator(**request_content)
             open_ai_response_validator._validate_non_stream_response_structure(response=chat_completion)
-            # 校验终止内容
+            # Verify termination content
             assert chat_completion.choices[0].finish_reason == "stop"
             assert open_ai_response_validator.usage[0].completion_tokens < 64, f"chat with stop and max tokens error, {open_ai_response_validator.content[0]}"
         except Exception as e:
@@ -388,7 +388,7 @@ class TestV1ChatCompletions:
             
 
     @pytest.mark.P1
-    @pytest.mark.description("采样策略测试-Temperature采样: temperature正常值、特殊值、极大/极小值")
+    @pytest.mark.description("Sampling strategy test - Temperature sampling: temperature normal values, special values, extreme max/min values")
     @pytest.mark.parametrize("temperature", [0.0001, 0.00001, 0.000001, 0.8, 2, 1.9999])
     def test_chat_random_response_with_temperature(self, client, model, temperature):
         question = CorrectnessTool.get_question()
@@ -411,10 +411,10 @@ class TestV1ChatCompletions:
                 if temperature < 1: 
                     CorrectnessTool.check_answer(open_ai_response_validator.content[0])
                 validator_list.append(open_ai_response_validator)
-            # 校验随机采样，也有可能相等，可酌情跳过该报错
+            # Verify random sampling, may also be equal, can optionally skip this error
             if temperature > 0.1:
                 assert validator_list[0].content[0] != validator_list[1].content[0], \
-                    f"校验随机采样，也有可能相等，可酌情跳过该报错"
+                    f"Verifying random sampling, they may also be equal, you can optionally skip this error"
         except Exception as e:
             logger.error(e)
             exc_info = sys.exc_info()
@@ -424,7 +424,7 @@ class TestV1ChatCompletions:
             
     # @pytest.mark.skip(reason="not support")
     @pytest.mark.P1
-    @pytest.mark.description("采样策略测试-Temperature采样: temperature边界值, 预期错误码拦截")
+    @pytest.mark.description("Sampling strategy test - Temperature sampling: temperature boundary values, expected error code interception")
     @pytest.mark.parametrize("temperature", [-1, 2.1])
     def test_chat_with_temperature_parameter_error(self, client, model, temperature, use_docker):
         if not use_docker:
@@ -455,7 +455,7 @@ class TestV1ChatCompletions:
 
 
     @pytest.mark.P1
-    @pytest.mark.description("采样策略测试-Top_p采样: top_p正常值、极大/极小值")
+    @pytest.mark.description("Sampling strategy test - Top_p sampling: top_p normal values, extreme max/min values")
     @pytest.mark.parametrize("top_p", [0.001, 0.6, 1, 0.999])
     def test_chat_random_response_with_top_p(self, client, model, top_p):
         question = CorrectnessTool.get_question()
@@ -477,7 +477,7 @@ class TestV1ChatCompletions:
                 open_ai_response_validator._validate_non_stream_response_structure(response=chat_completion)
                 CorrectnessTool.check_answer(open_ai_response_validator.content[0])
                 validator_list.append(open_ai_response_validator)
-            # 校验随机采样，也有可能相等，可酌情跳过该报错
+            # Verify random sampling, may also be equal, can optionally skip this error
             if top_p > 0.1:
                 assert validator_list[0].content[0] != validator_list[1].content[0], \
                     f"校验随机采样，也有可能相等，可酌情跳过该报错"
@@ -545,7 +545,7 @@ class TestV1ChatCompletions:
                 validator_list.append(open_ai_response_validator)
             # 校验随机采样，也有可能相等，可酌情跳过该报错
             assert validator_list[0].content[0] != validator_list[1].content[0], \
-                f"校验随机采样，也有可能相等，可酌情跳过该报错"
+                f"Verifying random sampling, they may also be equal, you can optionally skip this error"
         except Exception as e:
             logger.error(e)
             exc_info = sys.exc_info()
@@ -582,7 +582,7 @@ class TestV1ChatCompletions:
                 validator_list.append(open_ai_response_validator)
             # 校验随机采样，也有可能相等，可酌情跳过该报错
             assert validator_list[0].content[0] != validator_list[1].content[0], \
-                f"校验随机采样，也有可能相等，可酌情跳过该报错"
+                f"Verifying random sampling, they may also be equal, you can optionally skip this error"
         except Exception as e:
             logger.error(e)
             exc_info = sys.exc_info()
@@ -651,7 +651,7 @@ class TestV1ChatCompletions:
                 CorrectnessTool.check_answer(open_ai_response_validator.content[0])
                 validator_list.append(open_ai_response_validator)
             # 校验随机采样，也有可能相等，可酌情跳过该报错
-            assert validator_list[0].content[0] == validator_list[1].content[0], f"校验Greedy Search失败"
+            assert validator_list[0].content[0] == validator_list[1].content[0], f"Greedy Search validation failed"
         except Exception as e:
             logger.error(e)
             exc_info = sys.exc_info()

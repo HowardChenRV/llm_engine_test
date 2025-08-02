@@ -1,54 +1,54 @@
 # Quick Start Test
-推理镜像测试（包含sglang、vllm、lmdeploy引擎）
+Inference Image Testing (including sglang, vllm, lmdeploy engines)
 
-## Option 1: vllm推理服务镜像测试
-### 1. 依赖安装
+## Option 1: vllm Inference Service Image Testing
+### 1. Dependency Installation
 ```Bash
-# Step.1 推荐使用python3.10环境
+# Step.1 Recommended to use python3.10 environment
 conda create --name llm_engine_test python=3.10
 conda activate llm_engine_test
-# Step.2 安装测试框架依赖
+# Step.2 Install testing framework dependencies
 cd llm_engine_test
 pip install -r requirements.txt
 ```
-### 2. 自动化测试
-以NVIDIA相关vllm镜像为例，以下命令可自动从harbor根据tag拉取对应镜像，并根据配置文件依次启动对应模型推理服务容器测试，测试后删除容器。测试报告保存在 llm_engine_test/reports/ 目录下
+### 2. Automated Testing
+Taking NVIDIA-related vllm images as an example, the following commands can automatically pull corresponding images from harbor based on tags, and start corresponding model inference service container tests according to configuration files, then delete containers after testing. Test reports are saved in the llm_engine_test/reports/ directory.
 
-#### 测试配置下全部模型
+#### Test All Models Under Configuration
 ```Bash
-# 测试sglang-nvidia镜像
+# Test sglang-nvidia image
 python auto_run_test.py --models-yaml conf/vllm_sglang_nvidia_models.yaml --image-tag v0.1
-# 测试vllm-nvidia镜像
+# Test vllm-nvidia image
 python auto_run_test.py --models-yaml conf/vllm_vllm_nvidia_models.yaml --image-tag v3.8.3
 ```
-#### 测试配置下单个模型
+#### Test Single Model Under Configuration
 ```Bash
 python auto_run_test.py --models-yaml conf/vllm_sglang_nvidia_models.yaml --image-tag v0.1 --model-id llama-3-8b-instruct
 ```
-#### 新增测试模型、硬件、引擎
-新增/修改 llm_engine_test/conf/ 目录下对应yaml配置即可
+#### Adding Test Models, Hardware, Engines
+Add/modify corresponding yaml configurations under llm_engine_test/conf/ directory
 ```YAML
-engine: sglang  # 引擎名：与镜像名对齐，支持sglang、vllm
-device: nvidia  # 硬件名：与镜像名对齐
-use_docker: True    # 测试vllm镜像默认为true，否则使用引擎对应sdk启动
+engine: sglang  # Engine name: aligned with image name, supports sglang, vllm
+device: nvidia  # Hardware name: aligned with image name
+use_docker: True    # Default true for vllm image testing, otherwise use engine-specific SDK to start
 
-parentdir: /share/datasets/public_models/   # 模型根目录
+parentdir: /share/datasets/public_models/   # Model root directory
 models:
-  - id: llama-2-7b-chat         # 请求的model name
-    tp: 1                       # tp数   
-    subdir: Llama-2-7b-chat-hf  # 模型子目录
-    blocks: 2000                # Serving启动blocks设置
-    max_model_len: 4096         # Serving启动mml设置
+  - id: llama-2-7b-chat         # Requested model name
+    tp: 1                       # TP count
+    subdir: Llama-2-7b-chat-hf  # Model subdirectory
+    blocks: 2000                # Serving startup blocks setting
+    max_model_len: 4096         # Serving startup mml setting
   - id: qwen-1.5-14b-chat-fp8
     tp: 1
     subdir: /share/datasets/tmp_share/chenyonghua/qwen/Qwen1.5_14B_Chat_FP8
-    path: /share/datasets/tmp_share/chenyonghua/qwen/Qwen1.5_14B_Chat_FP8        # 模型路径，如果传了path会覆盖parentdir和subdir
+    path: /share/datasets/tmp_share/chenyonghua/qwen/Qwen1.5_14B_Chat_FP8        # Model path, if path is provided it will override parentdir and subdir
     blocks: 1800
     max_model_len: 25600
-    quantization_method: fp8    # 量化方法，与量化模型对应
+    quantization_method: fp8    # Quantization method, corresponding to quantized model
 ```
-#### 自己启动docker服务的情况
-如果是想自己启动docker服务做一些调试，需要记得把对应端口都映射出来，参考下述
+#### When Starting Docker Service Manually
+If you want to start docker service manually for debugging, remember to map all corresponding ports, refer to the following:
 ```Bash
 docker run --gpus all -tid \
            -p 8000:8000 -p 21002:21002 -p 20000:20000 -p 9000:9000 \
@@ -58,58 +58,58 @@ docker run --gpus all -tid \
            -v /mnt/resource/public_models/Qwen_Qwen2-7B-Instruct:/app/model/qwen2-7b-instruct \
            llm-nvidia:v4.8
 ```
-使用pytest执行对应case测试
+Execute corresponding case tests using pytest
 ```Bash
 pytest tests/vllm/ tests/common/ -vvs \
     --model qwen2-7b-instruct \
     --model-path /mnt/resource/public_models/Qwen_Qwen2-7B-Instruct \
     --max-model-len 32768 \
     --engine vllm \
-    --use-docker 
+    --use-docker
 ```
-(不过这样暂时就没有html报告可看了，需要自己关注终端日志)
+(However, there will be no HTML report to view this way, you need to pay attention to terminal logs)
 
-## Option 2: sglang-LLM sdk测试
-### 1. 自研引擎环境安装
+## Option 2: sglang-LLM SDK Testing
+### 1. Self-developed Engine Environment Installation
 
-### 2. 依赖安装
+### 2. Dependency Installation
 ```Bash
-# Step.1 激活前置安装的自研引擎环境
+# Step.1 Activate pre-installed self-developed engine environment
 conda activate sglang_env
-# Step.2 安装测试框架依赖
+# Step.2 Install testing framework dependencies
 cd llm_engine_test
 pip install -r requirements.txt
 ```
 
-### 3. 执行测试
-#### 自动化测试
-自动监测显卡资源、启动服务、执行case、收集报告。测试报告保存在当前目录 report/ 下
+### 3. Execute Testing
+#### Automated Testing
+Automatically monitor GPU resources, start services, execute cases, and collect reports. Test reports are saved in the current directory report/
 ```Bash
-# 执行默认Serving启动参数的全部case，默认加载 conf/sglang_models.yaml
+# Execute all cases with default Serving startup parameters, by default loading conf/sglang_models.yaml
 python auto_run_test.py
-# 只测试 conf/sglang_models.yaml 中的某个模型
+# Test only a specific model in conf/sglang_models.yaml
 python auto_run_test.py --model-id llama-3-8b-instruct
-# 执行其他feature的case
+# Execute other feature cases
 python auto_run_test.py --models-yaml conf/xxx_models.yaml
-# 使用docker镜像启动测试
+# Start testing using docker image
 docker pull sglang-nvidia:v0
 python auto_run_test.py --models-yaml conf/vllm_sglang_nvidia_models.yaml --image-tag v0
-# 测试prefix caching，以docker为例
+# Test prefix caching, using docker as an example
 python auto_run_test.py --models-yaml conf/vllm_sglang_prefix_caching_models.yaml --image-tag v0
 ```
 
-#### 单case调试
-服务已启动，单独测试部分case，调试用
+#### Single Case Debugging
+Service already started, test part of cases separately for debugging
 ```Bash
-# 执行目录下全部case
+# Execute all cases under directory
 pytest -vs tests/sglang/ --model xxx
-# 执行指定测试模块
+# Execute specified test module
 pytest -vs tests/sglang/test_chat_completions_api.py --model xxx
-# 执行指定测试类     
+# Execute specified test class
 pytest -vs tests/sglang/test_chat_completions_api.py::TestV1ChatCompletions --model xxx
-# 执行指定测试方法    
+# Execute specified test method
 pytest -vs tests/sglang/test_chat_completions_api.py::TestV1ChatCompletions::test_chat_single_round --model xxx
-# 执行指定优先级case    
+# Execute specified priority cases
 pytest -vs tests/sglang/test_chat_completions_api.py -m "P0 or P1" --model xxx
 ```
 

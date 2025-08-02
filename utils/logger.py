@@ -51,7 +51,7 @@ class Logger:
 logger = Logger()
 
 
-# 示例用法
+# Example usage
 # if __name__ == "__main__":
 #     logger = Logger()
 #     logger.info("This is an info message")

@@ -9,10 +9,10 @@ from ...utils.prometheus_tool import parse_prometheus_metrics, REQUIRED_METRICS
 class TestMetrics:
     
     @pytest.mark.P1
-    @pytest.mark.description("Metrics测试: prometheus数据格式校验、必须metrics数据校验")
+    @pytest.mark.description("Metrics test: prometheus data format validation, required metrics data validation")
     def test_metrics(self, client, host, port, model, engine, use_docker):
         if use_docker:
-            url = f"http://{host}:20000/metrics"    # vllm镜像启动metrics单独监听端口
+            url = f"http://{host}:20000/metrics"    # vllm image starts metrics on a separate listening port
         else:
             url = f"http://{host}:{port}/metrics"
 
@@ -28,13 +28,13 @@ class TestMetrics:
         }
         
         try:
-            # 先请求一次，给metrics构造数据
+            # First make a request to generate data for metrics
             chat_completion = client.chat.completions.create(
                 **request_content
             )
             logger.debug(chat_completion)
             
-            # 请求 metrics
+            # Request metrics
             response = requests.get(url, timeout=5)
             assert response.status_code == 200
             content = response.content.decode("utf-8")
@@ -42,15 +42,15 @@ class TestMetrics:
             
             assert content != "" , "metrics is None"
             metrics = parse_prometheus_metrics(content)
-            # 校验必须metrics
+            # Validate required metrics
             required_metrics = REQUIRED_METRICS[engine] + REQUIRED_METRICS["common"]
             for metric in required_metrics:
                 metric_name, metric_type = metric
-                # 校验metric存在性
+                # Validate metric existence
                 assert metric_name in metrics
                 assert metric_type == metrics[metric_name]["type"]
                 assert metrics[metric_name]["help"] is not None
-                # 校验metric值
+                # Validate metric values
                 metric_values = metrics[metric_name]["values"]
                 assert metric_values is not None
                 

@@ -28,7 +28,7 @@ class TestllmGenerate:
     def test_chat_single_round(self):
         max_tokens = 50
         message = [
-            {'role': 'user', 'content': '你是谁？'},
+            {'role': 'user', 'content': 'Who are you?'},
         ]
         prompt = self.tokenizer.apply_chat_template(
             message,
@@ -57,9 +57,9 @@ class TestllmGenerate:
     def test_chat_multi_round(self):
         max_tokens = 50
         message = [
-            {'role': 'user', 'content': '你是谁？'},
-            {'role': 'assistant', 'content': '我是大模型回答助手'},
-            {'role': 'user', 'content': '你能做什么？'},
+            {'role': 'user', 'content': 'Who are you?'},
+            {'role': 'assistant', 'content': 'I am a large model answering assistant'},
+            {'role': 'user', 'content': 'What can you do?'},
         ]
         prompt = self.tokenizer.apply_chat_template(
             message,
@@ -88,8 +88,8 @@ class TestllmGenerate:
     def test_chat_system_prompt(self):
         max_tokens = 50
         message = [
-            {'role': 'system', 'content': '请以嘲讽的语气回答'},
-            {'role': 'user', 'content': '你是谁？'},
+            {'role': 'system', 'content': 'Please answer in a sarcastic tone'},
+            {'role': 'user', 'content': 'Who are you?'},
         ]
         prompt = self.tokenizer.apply_chat_template(
             message,
@@ -118,7 +118,7 @@ class TestllmGenerate:
     def test_chat_with_stream(self):
         max_tokens = 50
         messages = [
-            {'role': 'user', 'content': '你是谁？'},
+            {'role': 'user', 'content': 'Who are you?'},
         ]
         prompt = self.tokenizer.apply_chat_template(
             messages,
@@ -279,7 +279,7 @@ class TestllmGenerate:
         text_1 = response_1.json().get("text", [])[0]
         text_2 = response_2.json().get("text", [])[0]
 
-        assert text_1 != text_2, f"校验随机采样，也有可能相等，可酌情跳过该报错"
+        assert text_1 != text_2, f"Verifying random sampling, they may also be equal, you can optionally skip this error"
         if temper < 1:
             assert self.answer in text_1.lower() and self.answer in text_2.lower()
 
@@ -302,7 +302,7 @@ class TestllmGenerate:
         text_2 = response_2.json().get("text", [])[0]
 
         assert self.answer in text_1.lower() and self.answer in text_2.lower()
-        assert text_1 != text_2, f"校验随机采样，也有可能相等，可酌情跳过该报错"
+        assert text_1 != text_2, f"Verifying random sampling, they may also be equal, you can optionally skip this error"
 
     @pytest.mark.P1
     @pytest.mark.parametrize("top_k", [10])
@@ -323,7 +323,7 @@ class TestllmGenerate:
         text_2 = response_2.json().get("text", [])[0]
 
         assert self.answer in text_1.lower() and self.answer in text_2.lower()
-        assert text_1 != text_2, f"校验随机采样，也有可能相等，可酌情跳过该报错"
+        assert text_1 != text_2, f"Verifying random sampling, they may also be equal, you can optionally skip this error"
 
     @pytest.mark.P1
     def test_sample_union(self):
@@ -345,7 +345,7 @@ class TestllmGenerate:
         text_2 = response_2.json().get("text", [])[0]
 
         assert self.answer in text_1.lower() and self.answer in text_2.lower()
-        assert text_1 != text_2, f"校验随机采样，也有可能相等，可酌情跳过该报错"
+        assert text_1 != text_2, f"Verifying random sampling, they may also be equal, you can optionally skip this error"
 
     @pytest.mark.P1
     @pytest.mark.parametrize("args", [[2, 0.001, 10], [2, 1, 1]])   # temperature, top_p, top_k

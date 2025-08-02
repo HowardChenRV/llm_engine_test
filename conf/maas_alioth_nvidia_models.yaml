@@ -4,7 +4,7 @@ use_docker: True
 
 parentdir: /share/datasets/public_models/
 models:
-  # 非量化模型-llama2
+  # Non-quantized model - llama2
   - id: llama-2-7b-chat
     tp: 1
     subdir: Llama-2-7b-chat-hf
@@ -15,7 +15,7 @@ models:
     subdir: Llama-2-70b-chat-hf
     blocks: 2048
     max_model_len: 4096
-  # 非量化模型-llama3
+  # Non-quantized model - llama3
   - id: llama-3-8b-instruct
     tp: 1
     subdir: Meta-Llama-3-8B-Instruct
@@ -26,7 +26,7 @@ models:
     subdir: Meta-Llama-3-70B-Instruct-hf
     blocks: 2048
     max_model_len: 8192
-  # 非量化模型-llama3.1
+  # Non-quantized model - llama3.1
   - id: llama-3.1-8b-instruct
     tp: 1
     subdir: Meta-Llama-3.1-8B-Instruct
@@ -37,7 +37,7 @@ models:
     subdir: Meta-Llama-3.1-70B-Instruct
     blocks: 2048
     max_model_len: 32768
-  # 非量化模型-qwen1.5
+  # Non-quantized model - qwen1.5
   - id: qwen-1.5-4b-chat
     tp: 1
     subdir: Qwen_Qwen1.5-4B-Chat
@@ -63,7 +63,7 @@ models:
     subdir: Qwen_Qwen1.5-72B-Chat
     blocks: 2048
     max_model_len: 32768
-  # 非量化模型-qwen2
+  # Non-quantized model - qwen2
   - id: qwen-2-7b-instruct
     tp: 1
     subdir: Qwen_Qwen2-7B-Instruct
@@ -74,7 +74,7 @@ models:
     subdir: Qwen_Qwen2-72B-Instruct
     blocks: 2048
     max_model_len: 32768
-  # 非量化模型-qwen2.5
+  # Non-quantized model - qwen2.5
   - id: qwen-2.5-7b-instruct
     tp: 1
     subdir: Qwen_Qwen2.5-7B-Instruct
@@ -96,7 +96,7 @@ models:
     blocks: 18000
     max_model_len: 32768
     fim_template: qwen2.5-coder
-  # 量化模型-fp8
+  # Quantized model - fp8
   - id: qwen-1.5-72b-chat-fp8
     tp: 2
     subdir: /share/datasets/tmp_share/chenyonghua/qwen1.5-72B-chat-llmcompressor-fp8
@@ -125,7 +125,7 @@ models:
     blocks: 2048
     max_model_len: 25600
     quantization_method: fp8
-  # 量化模型-awq
+  # Quantized model - awq
   - id: qwen-2.5-32b-instruct-awq
     tp: 1
     subdir: Qwen_Qwen2.5-32B-Instruct-AWQ
@@ -138,7 +138,7 @@ models:
     blocks: 2048
     max_model_len: 32768
     quantization_method: awq
-  # 量化模型-deepseek A1上没模型
+  # Quantized model - deepseek No model on A1
   # - id: deepseek-2.5-coder-236b
   #   tp: 8
   #   subdir: DeepSeek-V2.5-AWQ

@@ -10,7 +10,7 @@ from ...utils.logger import logger
 class TestV1Completions:
     
     @pytest.mark.P2
-    @pytest.mark.description("Completions接口对话推理测试: 非Stream模式 (低优, openai官方废弃)")
+    @pytest.mark.description("Completions interface dialog inference test: Non-Stream mode (low priority, openai official deprecated)")
     def test_chat_single_round(self, client, model):
         question = CorrectnessTool.get_question()
         request_content = {
@@ -25,20 +25,20 @@ class TestV1Completions:
                 **request_content
             )
             logger.debug(completion)
-            # 必须参数校验
+            # Required parameter validation
             for attr in ["id", "object", "created", "model", "choices", "usage"]:
-                assert hasattr(completion, attr), f'completion返回参数校验失败'
+                assert hasattr(completion, attr), f'completion return parameter validation failed'
             assert completion.model == model
-            # 校验choices
+            # Validate choices
             assert len(completion.choices) > 0
             for choice in completion.choices:
                 for attr in ["text", "index", "finish_reason"]:
-                    assert hasattr(choice, attr), f'choice返回参数校验失败'
+                    assert hasattr(choice, attr), f'choice return parameter validation failed'
                 assert choice.finish_reason in ["stop", "length"]
                 CorrectnessTool.check_answer(choice.text)
-            # 校验usage
+            # Validate usage
             for attr in ["prompt_tokens", "completion_tokens", "total_tokens"]:
-                assert hasattr(completion.usage, attr), f'usage返回参数校验失败'
+                assert hasattr(completion.usage, attr), f'usage return parameter validation failed'
             assert completion.usage.prompt_tokens>0 and completion.usage.completion_tokens>0
             assert completion.usage.completion_tokens <= question["max_tokens"]
             assert completion.usage.total_tokens == completion.usage.prompt_tokens + completion.usage.completion_tokens
@@ -50,7 +50,7 @@ class TestV1Completions:
 
 
     @pytest.mark.P2
-    @pytest.mark.description("Completions接口对话推理测试: Stream模式 (低优, openai官方废弃)")
+    @pytest.mark.description("Completions interface dialog inference test: Stream mode (low priority, openai official deprecated)")
     def test_chat_with_stream(self, client, model):
         question = CorrectnessTool.get_question()
         request_content = {
@@ -70,21 +70,21 @@ class TestV1Completions:
             finish_reason = None
             for completion in stream:
                 # print(completion)
-                # 必须参数校验
+                # Required parameter validation
                 for attr in ["id", "object", "created", "model", "choices", "usage"]:
-                    assert hasattr(completion, attr), f'completion返回参数校验失败'
+                    assert hasattr(completion, attr), f'completion return parameter validation failed'
                 assert completion.model == model
-                # 校验choices
+                # Validate choices
                 if finish_reason == None:
                     assert len(completion.choices) > 0
                 for choice in completion.choices:
                     for attr in ["text", "index", "finish_reason"]:
-                        assert hasattr(choice, attr), f'choice返回参数校验失败'
+                        assert hasattr(choice, attr), f'choice return parameter validation failed'
                     content += choice.text
                     finish_reason = choice.finish_reason
-                # 校验usage
+                # Validate usage
                 for attr in ["prompt_tokens", "completion_tokens", "total_tokens"]:
-                    assert hasattr(completion.usage, attr), f'usage返回参数校验失败'
+                    assert hasattr(completion.usage, attr), f'usage return parameter validation failed'
                 assert completion.usage.prompt_tokens>0 and completion.usage.completion_tokens>0
                 assert completion.usage.completion_tokens <= question["max_tokens"]
                 assert completion.usage.total_tokens == completion.usage.prompt_tokens + completion.usage.completion_tokens

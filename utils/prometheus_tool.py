@@ -81,50 +81,50 @@ REQUIRED_METRICS = {
     "vllm": [
         # Cache Config Information
         ("cache_config_info", "gauge"),
-        # 调度指标
+        # Scheduling metrics
         ("num_requests_running", "gauge"),
         ("num_requests_swapped", "gauge"),
         ("num_requests_waiting", "gauge"),
-        # cache利用率
+        # Cache utilization
         ("gpu_cache_usage_perc", "gauge"),
         ("cpu_cache_usage_perc", "gauge"),
-        # 输入输出token数
+        # Input/output token count
         ("prompt_tokens_total", "counter"),
         ("generation_tokens_total", "counter"),
-        # 延时
+        # Latency
         ("time_to_first_token_seconds", "histogram"),
         ("time_per_output_token_seconds", "histogram"),
         ("e2e_request_latency_seconds", "histogram"),
-        # 吞吐
+        # Throughput
         ("avg_prompt_throughput_toks_per_s", "gauge"),
         ("avg_generation_throughput_toks_per_s", "gauge"),
         # # Cache Config Information
         # ("vllm:cache_config_info", "gauge"),
-        # # 调度指标
+        # # Scheduling metrics
         # ("vllm:num_requests_running", "gauge"),
         # ("vllm:num_requests_swapped", "gauge"),
         # ("vllm:num_requests_waiting", "gauge"),
-        # # cache利用率
+        # # Cache utilization
         # ("vllm:gpu_cache_usage_perc", "gauge"),
         # ("vllm:cpu_cache_usage_perc", "gauge"),
-        # # 输入输出token数
+        # # Input/output token count
         # ("vllm:prompt_tokens_total", "counter"),
         # ("vllm:generation_tokens_total", "counter"),
-        # # 延时
+        # # Latency
         # ("vllm:time_to_first_token_seconds", "histogram"),
         # ("vllm:time_per_output_token_seconds", "histogram"),
         # ("vllm:e2e_request_latency_seconds", "histogram"),
-        # # 吞吐
+        # # Throughput
         # ("vllm:avg_prompt_throughput_toks_per_s", "gauge"),
         # ("vllm:avg_generation_throughput_toks_per_s", "gauge"),
     ],
     "common": [
-        # python指标
+        # Python metrics
         ("python_gc_objects_collected_total", "counter"),
         ("python_gc_objects_uncollectable_total", "counter"),
         ("python_gc_collections_total", "counter"),
         ("python_info", "gauge"),
-        # 系统指标
+        # System metrics
         ("process_virtual_memory_bytes", "gauge"),
         ("process_resident_memory_bytes", "gauge"),
         ("process_start_time_seconds", "gauge"),
@@ -135,7 +135,7 @@ REQUIRED_METRICS = {
 }
 
 
-# 解析普罗米修斯格式监控指标，解析失败报错
+# Parse Prometheus format monitoring metrics, parsing failure throws an error
 def parse_prometheus_metrics(metrics_text: str) -> Dict[str, Any]:
     logger.debug(metrics_text)
     metrics = {}
@@ -156,7 +156,7 @@ def parse_prometheus_metrics(metrics_text: str) -> Dict[str, Any]:
                 match = re.match(r'([\w:]+)\{?(.*?)\}? (\d+\.?\d*)', line)
                 if match:
                     metric_name, labels, value = match.groups()
-                    # 处理histogram类型的bucket
+                    # Handle histogram type buckets
                     if metric_name.endswith("_bucket"):
                         metric_name = metric_name.removesuffix("_bucket")
                         label_dict = {"label": "bucket"}
@@ -168,14 +168,14 @@ def parse_prometheus_metrics(metrics_text: str) -> Dict[str, Any]:
                         label_dict = {"label": "sum"}
                     else:
                         label_dict = {}
-                    # 处理label
+                    # Handle labels
                     if labels:
                         label_pairs = labels.split(',')
                         for pair in label_pairs:
                             key, val = pair.split('=')
                             label_dict[key] = val.strip('"')
                     label_dict["value"] = float(value)
-                    # 处理value
+                    # Handle value
                     if "values" not in metrics[metric_name]:
                         metrics[metric_name]["values"] = []
                     metrics[metric_name]["values"].append(label_dict)

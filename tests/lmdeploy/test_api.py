@@ -29,12 +29,12 @@ class TestModelCard:
     headers = { "Content-Type": "application/json" }
     
     @pytest.mark.P2
-    @pytest.mark.description("Model Card测试: id、root、object、permission、max_model_len")
+    @pytest.mark.description("Model Card test: id, root, object, permission, max_model_len")
     def test_model_card(self, host, port, model):
         try:
-            # 加载模型配置
+            # Load model configuration
             hf_model_config = AutoConfig.from_pretrained(model)
-            # 请求        
+            # Request
             response = requests.get(f"http://{host}:{port}/v1/models", headers=self.headers)
             assert response.status_code == 200
             data = json.loads(response.content)["data"][0]
@@ -55,17 +55,17 @@ class TestTokenizer:
     headers = { "Content-Type": "application/json" }
     
     @pytest.mark.P2
-    @pytest.mark.description("Tokenizer测试: tokenize")
+    @pytest.mark.description("Tokenizer test: tokenize")
     def test_tokenize(self, host, port, model):
         data = {
             "model": model,
-            "prompt": "你是谁？",
+            "prompt": "Who are you?",
             "add_special_tokens": True
         }
         try:
-            # 加载模型配置
+            # Load model configuration
             hf_model_config = AutoConfig.from_pretrained(model)
-            # 请求        
+            # Request
             response = requests.post(f"http://{host}:{port}/tokenize", headers=self.headers, json=data)
             assert response.status_code == 200
             response_json = response.json()
@@ -79,7 +79,7 @@ class TestTokenizer:
             pytest.fail()
             
     @pytest.mark.P2
-    @pytest.mark.description("Tokenizer测试: detokenize")
+    @pytest.mark.description("Tokenizer test: detokenize")
     def test_detokenize(self, host, port, model):
         data = {
             "model": model,

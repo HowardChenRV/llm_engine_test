@@ -7,16 +7,16 @@ from .system_tool import is_port_listening
 
 
 class sglangServingCommand:
-    SERVING_HOST = "0.0.0.0"    # 服务主机地址
-    LISTEN_PORT = 8000        # apiserver监听端口
-    TIMEOUT = 600               # serving启动超时时间，10min
+    SERVING_HOST = "0.0.0.0"    # Service host address
+    LISTEN_PORT = 8000        # apiserver listening port
+    TIMEOUT = 600               # serving startup timeout, 10min
     
-    # 默认启动命令
+    # Default startup command
     @classmethod
     def build_default_command(
-        cls, 
-        model_path: str, 
-        tp: int=1, 
+        cls,
+        model_path: str,
+        tp: int=1,
         quantization: Optional[str] = None,
         **kwargs) -> List[str]:
         
@@ -27,11 +27,11 @@ class sglangServingCommand:
             "--trust-remote-code"
         ]
         
-        # 拼接量化方法
+        # Concatenate quantization method
         if quantization:
             command = command + ["-q", quantization]
             
-        # 拼接剩余全部参数
+        # Concatenate all remaining parameters
         for key, value in kwargs.items():
             if isinstance(value, bool):
                 if value:
@@ -49,12 +49,12 @@ class sglangServingCommand:
         **kwargs
     ):
         """
-        根据给定的 tp 和 model_path 构建命令。
+        Build a command based on the given tp and model_path.
 
         :param tp: tensor parallelism (1, 2, or 4)
-        :param model_path: 模型路径
-        :param quantization: 量化方法，支持 awq
-        :return: 命令列表
+        :param model_path: Model path
+        :param quantization: Quantization method, supports awq
+        :return: Command list
         """
         self.model_path = model_path
         
@@ -77,16 +77,16 @@ class sglangServingCommand:
     def get_default_command(self):
         return self.command
     
-    # TODO: 追加prefix caching的适配
+    # TODO: Add prefix caching adaptation
 
     
-    #监测serving启动
+    # Monitor serving startup
     def serving_activate_monitor(self, serving_process) -> bool:
         base_url = f"http://{self.SERVING_HOST}:{self.LISTEN_PORT}"
         start_time = time.time()
 
         while time.time() - start_time < self.TIMEOUT:
-            # 检查进程是否已退出
+            # Check if the process has exited
             if serving_process.poll() is not None:
                 if serving_process.stderr:
                     error_output = serving_process.stderr.read().strip()
@@ -94,12 +94,12 @@ class sglangServingCommand:
                 else:
                     logger.error(f"Serving process has exited unexpectedly, but no error output was captured.")
                 return False
-            # 监测标准输出
+            # Monitor standard output
             output = serving_process.stdout.readline().strip()
             print(output, flush=True)
             # if base_url in output:
             #     logger.info(f"Found log {base_url}.")
-            # 监测端口监听
+            # Monitor port listening
             if is_port_listening(self.SERVING_HOST, self.LISTEN_PORT):
                 duration = time.time() - start_time
                 logger.info(f"{base_url} listening, duration is {duration} seconds.")
@@ -111,12 +111,12 @@ class sglangServingCommand:
 
 class llmServingCommand:
     
-    # 默认启动命令
+    # Default startup command
     @classmethod
     def build_default_command(
-        cls, 
-        model_path: str, 
-        tp: int=1, 
+        cls,
+        model_path: str,
+        tp: int=1,
         quantization: Optional[str] = None,
         tokenizer_path: Optional[str] = None,
         **kwargs) -> List[str]:
@@ -129,7 +129,7 @@ class llmServingCommand:
             "--trust-remote-code"
         ]
         
-        # 拼接多卡
+        # Concatenate multi-GPU
         if tp == 4:
             endpoints = ["localhost:8080", "localhost:8081", "localhost:8082", "localhost:8083"]
         elif tp == 2:
@@ -138,11 +138,11 @@ class llmServingCommand:
             endpoints = []
         command = base_command + (["--endpoints"] + endpoints if endpoints else [])
         
-        # 拼接量化方法
+        # Concatenate quantization method
         if quantization:
             command = command + ["-q", quantization]
             
-        # 拼接剩余全部参数
+        # Concatenate all remaining parameters
         for key, value in kwargs.items():
             if isinstance(value, bool):
                 if value:
@@ -161,13 +161,13 @@ class llmServingCommand:
         **kwargs
     ):
         """
-        根据给定的 tp 和 model_path 构建命令。
+        Build a command based on the given tp and model_path.
 
         :param tp: tensor parallelism (1, 2, or 4)
-        :param model_path: 模型路径
-        :param quantization: 量化方法，支持 awq
-        :param tokenizer_path: 不传默认模型路径
-        :return: 命令列表
+        :param model_path: Model path
+        :param quantization: Quantization method, supports awq
+        :param tokenizer_path: If not provided, defaults to model path
+        :return: Command list
         """
         self.model_path = model_path
         
@@ -193,7 +193,7 @@ class llmServingCommand:
     def get_default_command(self):
         return self.command
     
-    # 其他feature指令封装
+    # Other feature command encapsulation
     def get_feature_command(self, feature_name):
         cmd_suffix = Feature_config[feature_name]["cmd_suffix"]
         cmd = self.command + cmd_suffix

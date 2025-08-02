@@ -12,7 +12,7 @@ class TestCountToken:
         url = f"http://{host}:{port}/count_token"
         data = {
             "model": model,
-            "prompt": "你是谁？"
+            "prompt": "Who are you?"
         }
         response = requests.post(url, headers=self.headers, json=data, timeout=5)
         assert response.status_code == 200
@@ -20,5 +20,5 @@ class TestCountToken:
         
         response_json = response.json()
         assert response_json["model"] == model
-        assert response_json["prompt"] == "你是谁？"
+        assert response_json["prompt"] == "Who are you?"
         assert response_json["token_count"] > 0

@@ -1,6 +1,6 @@
 
 
-# 预留: 先简单校验，后续扩展
+# Reserved: Simple validation first, expand later
 class CorrectnessTool:
     
     QUESTION_LIST = [

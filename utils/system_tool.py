@@ -4,19 +4,19 @@ import psutil
 from .logger import logger
 
 
-# 监测端口监听
+# Monitor port listening
 def is_port_listening(host, port) -> bool:
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         return s.connect_ex((host, port)) == 0
     
 
-# 关闭指定进程下所有子进程
+# Terminate all child processes under a specified process
 def terminate_all_child_processes(parent_pid):
     try:
-        # 获取主进程对象
+        # Get the parent process object
         parent_process = psutil.Process(parent_pid)
         
-        # 获取所有子进程，包括递归子进程
+        # Get all child processes, including recursive child processes
         child_processes = parent_process.children(recursive=True)
         
         for child in child_processes:

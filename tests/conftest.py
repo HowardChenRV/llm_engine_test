@@ -4,7 +4,7 @@ import time
 from transformers import AutoConfig
 
 
-# 测试参数处理
+# Test parameter processing
 def pytest_addoption(parser):
     parser.addoption("--model", action="store", required=True, help="Model to be tested")
     parser.addoption("--model-path", action="store", default="", help="Model path")
@@ -66,13 +66,13 @@ def fim_template(pytestconfig):
 @pytest.fixture(scope="session")
 def client(host, port):
     openai_cli = OpenAI(
-        api_key="sk-das5uesnxk5skugn",  # 功能自动化专用key
+        api_key="sk-das5uesnxk5skugn",  # Dedicated key for functional automation
         base_url=f"https://cloud.llm-ai.com/vllm/v1/"
     )
     return openai_cli
 
 
-# 报告处理
+# Report processing
 @pytest.hookimpl(tryfirst=True)
 def pytest_html_results_table_header(cells):
     cells.insert(1, '<th class="sorttable" data-column-type="priority">Priority</th>')

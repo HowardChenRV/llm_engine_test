@@ -35,7 +35,7 @@ def get_run_kwargs(model, image):
 
 
 def run_container(model, **kwargs):
-    # 初始化配置
+    # Initialize configuration
     config = {
         "name": model,
         "image": f"{kwargs['image']}",
@@ -64,12 +64,12 @@ def run_container(model, **kwargs):
     if kwargs["fim_template"]:
         config["environment"]["FIM_TEMPLATE"] = kwargs["fim_template"]
     
-    # nvidia的卡自动尝试获取空余显卡
+    # Automatically try to get available GPU for NVIDIA cards
     if kwargs["chip"] == "nvidia":
         if set_cuda_visible_devices(kwargs["tp"]) == False:
             sys.exit(1)
         
-    # 设置显卡
+    # Set GPU
     if kwargs["chip"] == "enflame":
         config["environment"]["TOPS_VISIBLE_DEVICES"] = os.environ.get("TOPS_VISIBLE_DEVICES", None)
     else:

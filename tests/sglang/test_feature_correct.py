@@ -20,11 +20,11 @@ from ...utils.hf_transformers import run_correct_hf
 
 class TestFeatureCorrect:
     
-    SERVING_HOST = "0.0.0.0"    # 服务主机地址
-    LISTEN_PORT = 8000          # apiserver监听端口
-    TIMEOUT = 1200               # serving启动超时时间，20min
+    SERVING_HOST = "0.0.0.0"    # Service host address
+    LISTEN_PORT = 8000          # apiserver listening port
+    TIMEOUT = 1200               # serving startup timeout, 20min
 
-    # 监测serving启动
+    # Monitor serving startup
     @classmethod
     def serving_activate_monitor(cls, serving_process, result_container):
         base_url = f"http://{cls.SERVING_HOST}:{cls.LISTEN_PORT}"
@@ -41,7 +41,7 @@ class TestFeatureCorrect:
         ping_process = multiprocessing.Process(target=cls.ping_serving_port, args=(ping_result,))
 
         while time.time() - start_time < cls.TIMEOUT:
-            # 监测标准输出
+            # Monitor standard output
             output = serving_process.stdout.readline().strip()
             print(output, flush=True)
             if base_url in output:
@@ -52,14 +52,14 @@ class TestFeatureCorrect:
                     result_container["activate_result"] = True
                     result_container["duration"] = duration
 
-                    # 另起一个进程执行ping_serving_port
+                    # Start another process to execute ping_serving_port
                     ping_process.start()
                     ping_process.join()
                     
                     result_container["ping_success"] = ping_result["ping_success"]
                     return
             else:
-                # 启动失败
+                # Startup failed
                 for error_info in error_list:
                     if error_info in output:
                         logger.error(error_info)
@@ -70,7 +70,7 @@ class TestFeatureCorrect:
         result_container["activate_result"] = False
         return
 
-    # 接口测试
+    # Interface testing
     @classmethod
     def ping_serving_port(cls, result_container):
         def run_task(name, func, host, port):
@@ -87,7 +87,7 @@ class TestFeatureCorrect:
             # "ping_generate_stream": llmServerApi.ping_generate_stream
         }
         
-        # 起4个线程去ping不同接口
+        # Start 4 threads to ping different interfaces
         with concurrent.futures.ThreadPoolExecutor() as executor:
             futures = {executor.submit(run_task, name, func, cls.SERVING_HOST, cls.LISTEN_PORT): name for name, func in tasks.items()}
             
@@ -106,7 +106,7 @@ class TestFeatureCorrect:
         result_container["ping_success"] = True
         return
 
-    # 测试feature功能
+    # Test feature functionality
     @pytest.mark.parametrize("feature_name", ["prefix_caching", "spec_decoding", "peak_memory_predict", "dynamic_strategy"])
     def test_serving_feature(self, feature_name):
         feature_cfg = Feature_config[feature_name]
@@ -114,7 +114,7 @@ class TestFeatureCorrect:
         model_path = feature_cfg["model_path"]
         logger.info(f"Test feature_name '{feature_name}' with tp='{tp}' model_path='{model_path}'.")
         
-        # 获取可用gpu
+        # Get available GPUs
         available_gpus = get_available_gpus()
         assert len(available_gpus) >= tp, "Not enough GPUs."
         
@@ -125,19 +125,19 @@ class TestFeatureCorrect:
         # 设置llm日志等级
         os.environ["INFI_LOG_LEVEL"] = "3"
 
-        # 用于存储监测结果的容器
+        # Container for storing monitoring results
         res_container_base = multiprocessing.Manager().dict()
         res_container_target = multiprocessing.Manager().dict()
 
-        # 获取启动命令
+        # Get startup command
         llm_serving_command = llmServingCommand(model_path=model_path, tp=tp)
         command_base = llm_serving_command.get_default_command()
         command_target = llm_serving_command.get_feature_command(feature_name)
 
-        # 用于存储调用模型的结果
+        # Container for storing model call results
         res = [{"idx": x + 1} for x in range(len(Question_10))]
-
-        # 调用huggingface transformers作为基础正确性，先只加入单卡
+        
+        # Call huggingface transformers as baseline correctness, only add single GPU for now
         if tp == 1:
             run_correct_hf(model_path, Question_10, res)
         else:
@@ -147,7 +147,7 @@ class TestFeatureCorrect:
         task_tuple = (("base", command_base, res_container_base), ("target", command_target, res_container_target))
         for name, command, result_container in task_tuple:
             try:
-                # 启动Serving
+                # Start Serving
                 logger.info(f"start command: {command}")
                 process = subprocess.Popen(
                     command,
@@ -158,10 +158,10 @@ class TestFeatureCorrect:
                 )
                 time.sleep(30 * tp)
 
-                # 等待Serving启动
+                # Wait for Serving to start
                 self.serving_activate_monitor(process, result_container)
-
-                # 校验: serving启动成功
+                
+                # Validate: serving startup successful
                 activate_result = result_container.get("activate_result", False)
                 ping_success = result_container.get("ping_success", False)
                 duration = result_container.get("duration", 0)
@@ -174,7 +174,7 @@ class TestFeatureCorrect:
                         task = asyncio.create_task(llmServerApi.post_correct_async(self.SERVING_HOST, self.LISTEN_PORT, i, Question_10[i]))
                         task_list.append(task)
                     done, pending = await asyncio.wait(task_list, timeout=None)
-                    # 得到执行结果
+                    # Get execution results
                     for done_task in done:
                         idx, response = done_task.result()
                         text = response["text"][0][len(Question_10[idx]):]
@@ -184,23 +184,23 @@ class TestFeatureCorrect:
                 start_time = time.time()
                 loop = asyncio.get_event_loop()
                 loop.run_until_complete(call_correct())
-                logger.info(f"总耗时: {time.time() - start_time}")
+                logger.info(f"Total time: {time.time() - start_time}")
 
             except Exception as e:
                 logger.error(f"An error occurred: {e}")
                 pytest.fail(f"An unexpected error occurred: {e}")
             finally:
-                # 关闭Serving
+                # Close Serving
                 if process:
                     logger.info(f"Killing main PID: {process.pid}")
-                    # 列出并终止子进程
+                    # List and terminate child processes
                     terminate_all_child_processes(process.pid)
                     time.sleep(5)
-                    # 终止主进程
+                    # Terminate main process
                     process.kill()
                     process.wait()
 
-        # 对比两种结果，保存结果
+        # Compare both results, save results
         df = pd.DataFrame(res)
         df["score_hf"] = df.apply(lambda row: 1 if row["base"] == row["hf"] else 0, axis=1)
         df["score"] = df.apply(lambda row: 1 if row["base"] == row["target"] else 0, axis=1)
@@ -214,9 +214,9 @@ class TestFeatureCorrect:
         df.to_csv(output, index=False)
         logger.info(f"feature {feature_name} correct test finish, feature is {correct}, hf is {correct_hf}")
 
-    # 测试feature功能-向已经存在的服务发起调用
+    # Test feature functionality - Call an existing service
     def bak_test_serving_feature_as_client(self):
-        # 完成推理, 获取答案
+        # Complete inference, get answers
         res = [{"idx": x + 1} for x in range(len(Question_10))]
         for idx, question in enumerate(Question_10):
             logger.info(f"idx {idx} question {question} start")

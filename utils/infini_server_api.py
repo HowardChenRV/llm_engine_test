@@ -13,7 +13,7 @@ from .prometheus_tool import parse_prometheus_metrics
 
 class llmServerApi:
     
-    # TIMEOUT = 120               # 请求超时时间, 120s
+    # TIMEOUT = 120               # Request timeout, 120s
     TIMEOUT = 20
 
     @classmethod
@@ -131,29 +131,29 @@ class llmServerApi:
             required_metrics = [
                 # Config Information
                 ("llm:cache_config_info", "gauge"),
-                # 调度指标
+                # Scheduling metrics
                 ("llm:num_requests_running", "gauge"),
                 ("llm:num_requests_swapped", "gauge"),
                 ("llm:num_requests_waiting", "gauge"),
-                # cache利用率
+                # Cache utilization
                 ("llm:gpu_cache_usage_perc", "gauge"),
                 ("llm:cpu_cache_usage_perc", "gauge"),
-                # 输入输出token数
+                # Input/output token count
                 ("llm:prompt_tokens_total", "counter"),
                 ("llm:generation_tokens_total", "counter"),
-                # 延时
+                # Latency
                 ("llm:time_to_first_token_seconds", "histogram"),
                 ("llm:time_per_output_token_seconds", "histogram"),
                 ("llm:e2e_request_latency_seconds", "histogram"),
-                # 吞吐
+                # Throughput
                 ("llm:avg_prompt_throughput_toks_per_s", "gauge"),
                 ("llm:avg_generation_throughput_toks_per_s", "gauge"),
-                # python指标
+                # Python metrics
                 ("python_gc_objects_collected_total", "counter"),
                 ("python_gc_objects_uncollectable_total", "counter"),
                 ("python_gc_collections_total", "counter"),
                 ("python_info", "gauge"),
-                # 系统指标
+                # System metrics
                 ("process_virtual_memory_bytes", "gauge"),
                 ("process_resident_memory_bytes", "gauge"),
                 ("process_start_time_seconds", "gauge"),
@@ -162,16 +162,16 @@ class llmServerApi:
                 ("process_max_fds", "gauge")
             ]
             
-            # 解析prometheus的metrics格式, 解析失败会抛出
+            # Parse Prometheus metrics format, parsing failure will throw an exception
             metrics = parse_prometheus_metrics(content)
-            # 校验metrics
+            # Validate metrics
             for metric in required_metrics:
                 metric_name, metric_type = metric
-                # 校验metric存在性
+                # Validate metric existence
                 assert metric_name in metrics
                 assert metric_type == metrics[metric_name]["type"]
                 assert metrics[metric_name]["help"] is not None
-                # 校验metric值
+                # Validate metric values
                 metric_values = metrics[metric_name]["values"]
                 assert metric_values is not None
                 for metric_value in metric_values:
@@ -183,14 +183,14 @@ class llmServerApi:
                             if metric_value["label"] == "bucket":
                                 assert metric_value["le"] is not None and metric_value["le"] != ""
                     assert isinstance(metric_value["value"], float) and metric_value["value"] >= 0.0
-            # 校验成功
+            # Validation successful
             logger.info(f"Ping {url} finish.")
             return True
         except Exception as e:
             logger.error(f"Ping {url} failed: {e}")
             return False
 
-    # 正确性测试
+    # Correctness test
     @classmethod
     def post_generate(cls, host: str, port: int, query: str):
         url = f"http://{host}:{port}/generate"
@@ -217,7 +217,7 @@ class llmServerApi:
 
     @classmethod
     async def post_correct_async(cls, host: str, port: int, idx: int,  query: str):
-        logger.info(f'题目{idx} 启动时间: {time.time()}')
+        logger.info(f'Question {idx} start time: {time.time()}')
         url = f"http://{host}:{port}/generate"
         headers = {'Content-Type': 'application/json'}
         data = {
