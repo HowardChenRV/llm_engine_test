@@ -1,0 +1,39 @@
+FROM nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04
+ARG TORCH_VERSION=2.3.1
+ARG PYBIND_VERSION=2.11.1
+ARG NUMPY_VERSION=1.24.3
+
+COPY ./apt-sources.list /etc/apt/sources.list
+COPY ./requirements-ci.txt /opt/requirements-ci.txt
+
+RUN apt-get update
+RUN apt install -y --no-install-recommends \ 
+    python3-dev \
+    python3-pip \
+    python-is-python3 \
+    git \
+    wget \
+    curl \
+    unzip \
+    libopenmpi-dev \
+    openmpi-bin \
+    clang-format \
+    cmake
+
+RUN curl -L --output /opt/libtorch.zip "https://download.pytorch.org/libtorch/cu118/libtorch-shared-with-deps-${TORCH_VERSION}%2Bcu118.zip" \
+    && unzip /opt/libtorch.zip -d /opt && rm /opt/libtorch.zip
+ENV LIBTORCH_PATH=/opt/libtorch
+
+RUN curl -L --output /opt/pybind_src.zip "https://github.com/pybind/pybind11/archive/refs/tags/v2.11.1.zip" \
+    && unzip /opt/pybind_src.zip -d /opt \
+    && rm /opt/pybind_src.zip
+
+RUN cd /opt/pybind11-${PYBIND_VERSION} && mkdir build && cd build && cmake -DCMAKE_INSTALL_PREFIX=/opt/pybind_install .. \
+    && make -j && make install
+ENV PYBIND_PATH=/opt/pybind_install/share/cmake/pybind11/
+
+RUN pip3 install torch==${TORCH_VERSION} --index-url https://download.pytorch.org/whl/cu118
+
+RUN pip3 install -i https://pypi.tuna.tsinghua.edu.cn/simple numpy==${NUMPY_VERSION}
+
+RUN pip3 install -i https://pypi.tuna.tsinghua.edu.cn/simple -r /opt/requirements-ci.txt

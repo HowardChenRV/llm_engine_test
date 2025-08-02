@@ -1,0 +1,72 @@
+engine: vllm
+device: nvidia
+use_docker: True
+
+parentdir: /share/datasets/public_models/
+models:
+  # 非量化模型-llama2
+  - id: llama-2-7b-chat
+    tp: 1
+    subdir: Llama-2-7b-chat-hf
+    blocks: 2000
+    max_model_len: 4096
+  - id: llama-2-70b-chat
+    tp: 4
+    subdir: Llama-2-70b-chat-hf
+    blocks: 2000
+    max_model_len: 4096
+  # 非量化模型-llama3
+  - id: llama-3-8b-instruct
+    tp: 1
+    subdir: Meta-Llama-3-8B-Instruct
+    blocks: 2000
+    max_model_len: 8192
+  - id: llama-3-70b-instruct
+    tp: 4
+    subdir: Meta-Llama-3-70B-Instruct-hf
+    blocks: 2000
+    max_model_len: 8192
+  # 非量化模型-llama3.1
+  - id: llama-3.1-8b-instruct
+    tp: 1
+    subdir: Meta-Llama-3.1-8B-Instruct
+    blocks: 2000
+    max_model_len: 131072
+  - id: llama-3.1-70b-instruct
+    tp: 4
+    subdir: Meta-Llama-3.1-70B-Instruct
+    blocks: 2000
+    max_model_len: 131072
+  # 非量化模型-qwen1.5
+  - id: qwen-1.5-7b-chat
+    tp: 1
+    subdir: Qwen_Qwen1.5-7B-Chat
+    blocks: 2000
+    max_model_len: 32768
+  - id: qwen-1.5-72b-chat
+    tp: 4
+    subdir: Qwen_Qwen1.5-72B-Chat
+    blocks: 2000
+    max_model_len: 32768
+  # 非量化模型-qwen2
+  - id: qwen-2-7b-instruct
+    tp: 1
+    subdir: Qwen_Qwen2-7B-Instruct
+    blocks: 2000
+    max_model_len: 32768
+  - id: qwen-2-72b-instruct
+    tp: 4
+    subdir: Qwen_Qwen2-72B-Instruct
+    blocks: 2000
+    max_model_len: 32768
+  # 非量化模型-qwen2.5
+  - id: qwen-2.5-7b-instruct
+    tp: 1
+    subdir: Qwen_Qwen2.5-7B-Instruct
+    blocks: 2000
+    max_model_len: 32768
+  - id: qwen-2.5-72b-instruct
+    tp: 4
+    subdir: Qwen_Qwen2.5-72B-Instruct
+    blocks: 2000
+    max_model_len: 32768

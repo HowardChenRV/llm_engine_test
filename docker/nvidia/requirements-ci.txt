@@ -1,0 +1,52 @@
+### requirements-lint.txt
+black==24.4.2
+flake8==7.1.0
+isort==5.13.2
+mypy==1.10.0
+clang-format==13.0.0
+
+### requirements-test.txt
+# testing
+pytest
+tensorizer>=2.9.0
+pytest-forked
+pytest-asyncio==0.23.8
+pytest-rerunfailures
+pytest-shard
+
+# testing utils
+httpx
+peft
+requests
+ray
+sentence-transformers # required for embedding
+
+# Benchmarking
+aiohttp
+
+# profiling
+nvtx
+
+# quantization
+bitsandbytes==0.42.0
+
+# coverage
+pytest-cov
+
+### requirements.txt
+sentencepiece  # Required for LLaMA tokenizer.
+numpy < 2.0.0
+requests
+py-cpuinfo
+transformers >= 4.40.0  # Required for StarCoder2 & Llava, Llama 3.
+tokenizers >= 0.19.1  # Required for Llama 3.
+fastapi
+aiohttp
+openai
+uvicorn[standard]
+pydantic >= 2.0  # Required for OpenAI server.
+prometheus_client >= 0.18.0
+prometheus-fastapi-instrumentator >= 7.0.0
+tiktoken >= 0.6.0  # Required for DBRX tokenizer
+typing_extensions
+pyzmq

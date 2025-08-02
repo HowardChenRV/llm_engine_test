@@ -1,0 +1,90 @@
+# HELP num_requests_running The number of running requests.
+# TYPE num_requests_running gauge
+num_requests_running{engine="sglang",model_name="deepseek-r1"} 114.0
+# HELP num_used_tokens The number of used tokens.
+# TYPE num_used_tokens gauge
+num_used_tokens{engine="sglang",model_name="deepseek-r1"} 285902.0
+# HELP gen_throughput The generation throughput (token/s).
+# TYPE gen_throughput gauge
+gen_throughput{engine="sglang",model_name="deepseek-r1"} 1449.4567023014522
+# HELP num_requests_waiting The number of requests in the waiting queue.
+# TYPE num_requests_waiting gauge
+num_requests_waiting{engine="sglang",model_name="deepseek-r1"} 22.0
+# HELP gpu_cache_usage_perc The token usage.
+# TYPE gpu_cache_usage_perc gauge
+gpu_cache_usage_perc{engine="sglang",model_name="deepseek-r1"} 0.93
+# HELP cache_hit_rate The prefix cache hit rate.
+# TYPE cache_hit_rate gauge
+cache_hit_rate{engine="sglang",model_name="deepseek-r1"} 0.0917488267556503
+# HELP spec_accept_length The average acceptance length of speculative decoding.
+# TYPE spec_accept_length gauge
+spec_accept_length{engine="sglang",model_name="deepseek-r1"} 0.0
+# HELP time_to_first_token_seconds Histogram of time to first token in seconds.
+# TYPE time_to_first_token_seconds histogram
+time_to_first_token_seconds_sum{engine="sglang",model_name="deepseek-r1"} 6142.175782203674
+time_to_first_token_seconds_bucket{engine="sglang",le="0.1",model_name="deepseek-r1"} 0.0
+time_to_first_token_seconds_bucket{engine="sglang",le="0.25",model_name="deepseek-r1"} 8.0
+time_to_first_token_seconds_bucket{engine="sglang",le="0.5",model_name="deepseek-r1"} 35.0
+time_to_first_token_seconds_bucket{engine="sglang",le="0.75",model_name="deepseek-r1"} 76.0
+time_to_first_token_seconds_bucket{engine="sglang",le="1.0",model_name="deepseek-r1"} 107.0
+time_to_first_token_seconds_bucket{engine="sglang",le="2.0",model_name="deepseek-r1"} 189.0
+time_to_first_token_seconds_bucket{engine="sglang",le="5.0",model_name="deepseek-r1"} 280.0
+time_to_first_token_seconds_bucket{engine="sglang",le="10.0",model_name="deepseek-r1"} 510.0
+time_to_first_token_seconds_bucket{engine="sglang",le="20.0",model_name="deepseek-r1"} 674.0
+time_to_first_token_seconds_bucket{engine="sglang",le="40.0",model_name="deepseek-r1"} 710.0
+time_to_first_token_seconds_bucket{engine="sglang",le="60.0",model_name="deepseek-r1"} 710.0
+time_to_first_token_seconds_bucket{engine="sglang",le="80.0",model_name="deepseek-r1"} 710.0
+time_to_first_token_seconds_bucket{engine="sglang",le="120.0",model_name="deepseek-r1"} 719.0
+time_to_first_token_seconds_bucket{engine="sglang",le="160.0",model_name="deepseek-r1"} 719.0
+time_to_first_token_seconds_bucket{engine="sglang",le="+Inf",model_name="deepseek-r1"} 719.0
+time_to_first_token_seconds_count{engine="sglang",model_name="deepseek-r1"} 719.0
+# HELP e2e_request_latency_seconds Histogram of End-to-end request latency in seconds
+# TYPE e2e_request_latency_seconds histogram
+e2e_request_latency_seconds_sum{engine="sglang",model_name="deepseek-r1"} 57455.101734638214
+e2e_request_latency_seconds_bucket{engine="sglang",le="0.1",model_name="deepseek-r1"} 0.0
+e2e_request_latency_seconds_bucket{engine="sglang",le="0.25",model_name="deepseek-r1"} 0.0
+e2e_request_latency_seconds_bucket{engine="sglang",le="0.5",model_name="deepseek-r1"} 0.0
+e2e_request_latency_seconds_bucket{engine="sglang",le="1.0",model_name="deepseek-r1"} 0.0
+e2e_request_latency_seconds_bucket{engine="sglang",le="2.0",model_name="deepseek-r1"} 0.0
+e2e_request_latency_seconds_bucket{engine="sglang",le="5.0",model_name="deepseek-r1"} 11.0
+e2e_request_latency_seconds_bucket{engine="sglang",le="10.0",model_name="deepseek-r1"} 11.0
+e2e_request_latency_seconds_bucket{engine="sglang",le="20.0",model_name="deepseek-r1"} 11.0
+e2e_request_latency_seconds_bucket{engine="sglang",le="40.0",model_name="deepseek-r1"} 13.0
+e2e_request_latency_seconds_bucket{engine="sglang",le="60.0",model_name="deepseek-r1"} 15.0
+e2e_request_latency_seconds_bucket{engine="sglang",le="80.0",model_name="deepseek-r1"} 58.0
+e2e_request_latency_seconds_bucket{engine="sglang",le="120.0",model_name="deepseek-r1"} 365.0
+e2e_request_latency_seconds_bucket{engine="sglang",le="160.0",model_name="deepseek-r1"} 529.0
+e2e_request_latency_seconds_bucket{engine="sglang",le="+Inf",model_name="deepseek-r1"} 538.0
+e2e_request_latency_seconds_count{engine="sglang",model_name="deepseek-r1"} 538.0
+# HELP time_per_output_token_seconds Histogram of time per output token in seconds.
+# TYPE time_per_output_token_seconds histogram
+time_per_output_token_seconds_sum{engine="sglang",model_name="deepseek-r1"} 81204.03874115045
+time_per_output_token_seconds_bucket{engine="sglang",le="0.005",model_name="deepseek-r1"} 13.0
+time_per_output_token_seconds_bucket{engine="sglang",le="0.01",model_name="deepseek-r1"} 16.0
+time_per_output_token_seconds_bucket{engine="sglang",le="0.015",model_name="deepseek-r1"} 61.0
+time_per_output_token_seconds_bucket{engine="sglang",le="0.02",model_name="deepseek-r1"} 82.0
+time_per_output_token_seconds_bucket{engine="sglang",le="0.025",model_name="deepseek-r1"} 93.0
+time_per_output_token_seconds_bucket{engine="sglang",le="0.03",model_name="deepseek-r1"} 130.0
+time_per_output_token_seconds_bucket{engine="sglang",le="0.04",model_name="deepseek-r1"} 8047.0
+time_per_output_token_seconds_bucket{engine="sglang",le="0.05",model_name="deepseek-r1"} 8902.0
+time_per_output_token_seconds_bucket{engine="sglang",le="0.075",model_name="deepseek-r1"} 10343.0
+time_per_output_token_seconds_bucket{engine="sglang",le="0.1",model_name="deepseek-r1"} 218392.0
+time_per_output_token_seconds_bucket{engine="sglang",le="0.15",model_name="deepseek-r1"} 494383.0
+time_per_output_token_seconds_bucket{engine="sglang",le="0.2",model_name="deepseek-r1"} 557198.0
+time_per_output_token_seconds_bucket{engine="sglang",le="0.3",model_name="deepseek-r1"} 581745.0
+time_per_output_token_seconds_bucket{engine="sglang",le="0.4",model_name="deepseek-r1"} 586331.0
+time_per_output_token_seconds_bucket{engine="sglang",le="0.5",model_name="deepseek-r1"} 588481.0
+time_per_output_token_seconds_bucket{engine="sglang",le="0.75",model_name="deepseek-r1"} 590901.0
+time_per_output_token_seconds_bucket{engine="sglang",le="1.0",model_name="deepseek-r1"} 591969.0
+time_per_output_token_seconds_bucket{engine="sglang",le="2.5",model_name="deepseek-r1"} 593761.0
+time_per_output_token_seconds_bucket{engine="sglang",le="+Inf",model_name="deepseek-r1"} 594708.0
+time_per_output_token_seconds_count{engine="sglang",model_name="deepseek-r1"} 594708.0
+# HELP prompt_tokens_total Number of prefill tokens processed.
+# TYPE prompt_tokens_total counter
+prompt_tokens_total{engine="sglang",model_name="deepseek-r1"} 830553.0
+# HELP generation_tokens_total Number of generation tokens processed.
+# TYPE generation_tokens_total counter
+generation_tokens_total{engine="sglang",model_name="deepseek-r1"} 501108.0
+# HELP num_requests_total Number of requests processed.
+# TYPE num_requests_total counter
+num_requests_total{engine="sglang",model_name="deepseek-r1"} 538.0

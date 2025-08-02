@@ -1,0 +1,10 @@
+pyaml
+pytest
+pytest-html
+pynvml
+psutil
+prettytable
+httpx[socks]==0.27.2
+docker
+transformers
+openai==1.43.0

@@ -1,0 +1,51 @@
+engine: sglang
+device: nvidia
+use_docker: False
+
+parentdir: /share/datasets/public_models/
+models:
+  - id: llama-3-8b-instruct
+    tp: 1
+    subdir: Meta-Llama-3-8B-Instruct
+    blocks: 2000
+    max_model_len: 8192
+  - id: qwen-1.5-7b-chat
+    tp: 1
+    subdir: Qwen_Qwen1.5-7B-Chat
+    blocks: 2000
+    max_model_len: 32768
+  - id: qwen-2-7b-instruct
+    tp: 1
+    subdir: Qwen_Qwen2-7B-Instruct
+    blocks: 2000
+    max_model_len: 32768
+  # - id: llama-3-8b-instruct
+  #   tp: 2
+  #   subdir: Meta-Llama-3-8B-Instruct
+  #   blocks: 2000
+  #   max_model_len: 8192
+  # - id: qwen-1.5-7b-chat
+  #   tp: 2
+  #   subdir: Qwen_Qwen1.5-7B-Chat
+  #   blocks: 2000
+  #   max_model_len: 32768
+  # - id: qwen-2-7b-instruct
+  #   tp: 2
+  #   subdir: Qwen_Qwen2-7B-Instruct
+  #   blocks: 2000
+  #   max_model_len: 32768
+  - id: llama-3-70b-instruct
+    tp: 4
+    subdir: Meta-Llama-3-70B-Instruct-hf
+    blocks: 2000
+    max_model_len: 8192
+  - id: qwen-1.5-72b-chat
+    tp: 4
+    subdir: Qwen_Qwen1.5-72B-Chat
+    blocks: 2000
+    max_model_len: 32768
+  - id: qwen-2-72b-instruct
+    tp: 4
+    subdir: Qwen_Qwen2-72B-Instruct
+    blocks: 2000
+    max_model_len: 32768
