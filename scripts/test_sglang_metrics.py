@@ -37,7 +37,6 @@ for metric in metrics:
     for metric_value in metric_values:
         print(metric, metric_value)
         
-        # 20241113 修改metrics含义，需求单：https://project.feishu.cn/llm-inference/story/detail/5021473629?tabKey=detail#detail
         # if metric_name.startswith(engine) and metric_name != f"{engine}:cache_config_info":
         # if "engine" in metric_value and metric_name != "cache_config_info":
         #     assert metric_value["engine"] == engine
